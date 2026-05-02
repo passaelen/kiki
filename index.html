@@ -1537,9 +1537,9 @@ function setPerf(id, value){
     setText("p-or-belgique-g", p.gold_per_g.toFixed(2) + " €");
     setText("p-argent-g", p.silver_per_g.toFixed(2) + " €");
 
-    setText("benef-or-suisse", euroSigned(benefOrSuisse));
-    setText("benef-or-belgique", euroSigned(benefOrBelgique));
-    setText("benef-argent", euroSigned(benefArgent));
+    setValueColor("benef-or-suisse", benefOrSuisse);
+setValueColor("benef-or-belgique", benefOrBelgique);
+setValueColor("benef-argent", benefArgent);
 
     setPerf("perf-or-suisse", perf(orSuisse, pf.or_suisse_cost));
     setPerf("perf-or-belgique", perf(orBelgique, pf.or_belgique_cost));
