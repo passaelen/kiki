@@ -4,5 +4,6 @@ const achats = [
 
 
 const metaux = [
-{date: "15/03/2025", type: "OR", loc: "Bel.", tot: 2988.05, poids: 31.10, label: "⅒ Koala"}
+{date: "03/04/2025", type: "OR", loc: "Bel.", tot: 1494.02, poids: 15.55, label: "⅒ Kookaburra"},
+{date: "09/04/2025", type: "OR", loc: "Bel.", tot: 1494.03, poids: 15.55, label: "⅒ Koala"}
  ]; 
