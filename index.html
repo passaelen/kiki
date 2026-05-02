@@ -10,8 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portefeuille</title>
 
-<link rel="stylesheet" href="couleurs.css?v=20">
-<link rel="stylesheet" href="style.css?v=20">
+<link rel="stylesheet" href="couleurs.css?v=202630042011">
+<link rel="stylesheet" href="style.css?v=202630042011">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
@@ -22,7 +22,7 @@
 <!-- HEADER -->
 <div class="header">
     <div class="header-left">
-        <h2>💼 Portefeuilles</h2>
+        <h2>💼 Portefeuille</h2>
         <small>Or · Argent · ETF</small>
     </div>
 
@@ -424,7 +424,7 @@ async function fetchPrices(){
 
     async function fetchETFPrices(){
 
-    const API_KEY = "289d74f9ffc744e7a3c4f3b8eabac3fb";
+    const API_KEY = "e10aefe097fe40fba25f4e129bdf0c4f";
 
     // ===== CACHE =====
     const cache = JSON.parse(localStorage.getItem("etfPrices"));
@@ -1220,7 +1220,7 @@ function getVariation(now, close){
 // ===== HISTORY =====
 async function fetchHistory(){
 
-    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRPQxB1fKc-snH1FVmy4Vdmo5IRBLwxx-bFLTT2LraGehV1y8ht3ZPQUSVsLNZy6Q_MUoC36XM4lbQw/pub?gid=1311770820&single=true&output=csv";
+    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQQqy9DRNPqKY59Ka56rNkWGwYfd7XqKiGh6YJxudczufOx7ZOW6SzlTObz4DLG4t6AK9qmBfn6Tl78/pub?gid=1311770820&single=true&output=csv";
 
     const res = await fetch(url);
     const text = await res.text();
