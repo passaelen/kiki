@@ -1,0 +1,202 @@
+<!DOCTYPE html><html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+  <title>🇨🇭 Or Suisse</title>  
+  <link rel="stylesheet" href="style.css?v=7">
+  <link rel="stylesheet" href="couleurs.css?v=7">
+</head>
+	
+<body>  <!-- HEADER -->  
+	<div class="header">
+	    <div class="header-left"><h2>🇨🇭 Or Suisse</h2><small>Stock sécurisé</small></div>
+		<div class="header-right"><a href="index.html" class="badge">← Retour</a></div>
+    </div>  
+	
+	<div class="container"><!-- TOTAL -->
+	<div class="highlight"><small>Total Or Suisse</small><h2 id="totalSwiss">0 g</h2></div>
+    <div class="card"><h3>Or</h3>
+		
+
+<table>
+	
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Qté</th>
+        <th>Poids</th>
+		
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- 🔹 LINGOTS -->
+      <tr>
+        <td colspan="3"><strong>🧱 Lingots & lingotins</strong></td>
+      </tr>
+	<tr data-label="L. Pamp"><td>Lingot 50 g PAMP</td><td>1</td><td class="poids">0 g</td></tr>
+	<tr data-label="L. Oz. Pamp"><td>Lingot 1 oz PAMP</td><td>2</td><td class="poids">0 g</td></tr>
+	<tr data-label="L. 10g. Pamp"><td>Lingotin 10 g PAMP</td><td>5</td><td class="poids">0 g</td></tr>
+    <tr data-label="L. 5g. Pamp"><td>Lingotin 5 g PAMP</td><td>8</td><td class="poids">0 g</td></tr>
+	<tr data-label="L. 2.5g. Pamp"><td>Lingotin 2,5 g PAMP</td><td>4</td><td class="poids">0 g</td></tr>
+	<tr data-label="L. 1g. Pamp"><td>Lingotin 1 g PAMP</td><td>4</td><td class="poids">0 g</td></tr>
+    <tr data-label="L. 1g. Umicore"><td>Lingotin 1 g Umicore</td><td>2</td><td class="poids">0 g</td></tr>
+      
+
+      <tr>
+        <td colspan="2"><strong>Total lingots</strong></td>
+        <td><strong id="totalLingots">0 g</strong></td>
+      </tr>
+	</tbody>
+</table>
+
+   <br>
+
+<table>
+	<tbody>
+      <!-- 🔹 PIÈCES -->
+      <tr>
+        <td colspan="3"><strong>🪙 Pièces</strong></td>
+      </tr>
+      <tr data-label="P. oz. Kang."><td>Kangourou 1 oz</td><td>3</td><td class="poids">0 g</td></tr>
+      <tr data-label="P. ⅒ Philh."><td>Philharmonique 1/10 oz</td><td>5</td><td class="poids">0 g</td></tr>
+      <tr data-label="P. Nap. 40 Fr."><td>40 Francs Napoléon</td><td>1</td><td class="poids">0 g</td></tr>
+
+      <tr>
+        <td colspan="2"><strong>Total pièces</strong></td>
+        <td><strong id="totalPieces">0 g</strong></td>
+	  </tr>
+
+</tbody>
+</table>
+
+<br><br>
+
+
+<div class="total-line">
+  <span><span class="dot dot-or-suisse"></span> Total des achats en Suisse : </span>
+  <span id="totalValeur">0 €</span>
+</div>
+
+<div class="total-sub">
+	<span id="tableTotal">0 g</span>
+    <span id="prixMoyen">0 €/g</span>
+</div>
+
+</div><!-- Fin CARD -->
+</div><!-- Fin container -->  
+
+
+
+
+
+<script src="achats.js"></script>
+	
+<script>
+
+// 🔹 Récupération des données
+const data = typeof metaux !== "undefined" ? metaux : [];
+
+// 🔹 Filtre OR Suisse
+const orSuisse = data.filter(m => m.type === "OR" && m.loc === "Suisse");
+
+// 🔹 Index par label
+const map = {};
+
+orSuisse.forEach(m => {
+  if (!map[m.label]) {
+    map[m.label] = {
+      poids: 0,
+      total: 0,
+      count: 0
+    };
+  }
+
+  map[m.label].poids += m.poids || 0;
+  map[m.label].total += m.tot || 0;
+  map[m.label].count += 1;
+});
+
+
+// 🔹 Injection dans le HTML
+let totalPoids = 0;
+let totalLingots = 0;
+let totalPieces = 0;
+let totalValeur = 0;
+let totalLingotsVal = 0;
+let totalPiecesVal = 0;	
+
+orSuisse.forEach(m => {
+  totalValeur += m.tot || 0;
+
+  if (m.label.includes("L.")) {
+    totalLingots += m.poids;
+    totalLingotsVal += m.tot || 0;
+  } else {
+    totalPieces += m.poids;
+    totalPiecesVal += m.tot || 0;
+  }
+});
+
+
+document.getElementById("totalLingots").textContent =
+  totalLingots.toFixed(2) + " g";
+
+document.getElementById("totalPieces").textContent =
+  totalPieces.toFixed(2) + " g";
+
+	
+// 🔹 boucle	
+document.querySelectorAll("tr[data-label]").forEach(row => {
+  const label = row.dataset.label;
+  const item = map[label];
+  const montantCell = row.querySelector(".montant");
+
+  if (!item) return;
+
+  // poids
+  const poidsCell = row.querySelector(".poids");
+	  if (poidsCell) {
+	    poidsCell.textContent = item.poids.toFixed(2) + " g";
+	  }
+
+	if (montantCell) {
+	  montantCell.textContent = item.total.toFixed(2) + " €";
+	}
+
+  
+  totalPoids += item.poids;
+});
+
+
+// 🔹 calcul prix moyen	
+const prixMoyen = totalPoids > 0 ? totalValeur / totalPoids : 0;	
+
+
+	
+// 🔹 affichage
+document.getElementById("totalValeur").textContent =
+  totalValeur.toFixed(2) + " €";
+	
+document.getElementById("totalSwiss").textContent =
+  totalPoids.toFixed(2) + " g";
+
+document.getElementById("tableTotal").textContent =
+  totalPoids.toFixed(2) + " g";
+	
+document.getElementById("prixMoyen").textContent =
+  prixMoyen.toFixed(2) + " €/g";
+
+//document.getElementById("totalLingotsVal").textContent =
+//  totalLingotsVal.toFixed(2) + " €";
+
+//document.getElementById("totalPiecesVal").textContent =
+//  totalPiecesVal.toFixed(2) + " €";
+
+
+
+</script>
+
+</body>
+</html>
