@@ -6,13 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>🇧🇪 Or Belgique</title>
-  <link rel="stylesheet" href="style.css?v=7">
-  <link rel="stylesheet" href="couleurs.css?v=7">
+  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="couleurs.css?v=8">
 </head>
 
 <body><!-- HEADER -->
 <div class="header">
-  <div class="header-left"><h2>🇧🇪 Or Belgique</h2><small>Stock privé</small></div>
+  <div class="header-left"><h2>🇧🇪 Or Belgique</h2><small>(Stock privé)</small></div>
   <div class="header-right"><a href="index.html" class="badge">← Retour</a></div>
 </div>
 
@@ -45,16 +45,16 @@
      
 
 <tr data-key="ML_1_10_DIV2">
-<td>M.Leaf 1/10 (Noël 2024)</td>
+<td>M.Leaf ⅒ (Kdo Noël 2024)</td>
 <td>1</td>
 <td class="poids">0 g</td>
 </tr>
 
 <tr data-key="KOALA_1_10">
-<td>Koala 1/10 oz</td><td>5</td><td class="poids">0 g</td></tr>
+<td>Koala ⅒</td><td>5</td><td class="poids">0 g</td></tr>
 
 <tr data-key="KOOKABURRA_1_10">
-<td>Kookaburra 1/10 oz</td>
+<td>Kookaburra ⅒</td>
 <td>5</td>
 <td class="poids">0 g</td>
 </tr>
@@ -94,9 +94,8 @@ const orBelgique = data.filter(m => m.type === "OR" && m.loc === "Bel.");
 function getKey(label) {
   const l = label.toLowerCase();
 
-if (l.includes("2024") && (l.includes("M.Leaf") || l.includes("M.Leaf"))) 
+if (l.includes("2024") && l.includes("m.leaf")) 
 return "ML_1_10_DIV2";
-
 
 if (l.includes("koala")) 
 return "KOALA_1_10";
