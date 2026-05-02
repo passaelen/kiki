@@ -43,12 +43,21 @@
       </tr>
 
       <tr data-key="ML_1_4"><td>Maple Leaf 1/4 oz</td><td>0</td><td class="poids">0 g</td></tr>
-      <tr data-key="ML_1_10_DIV2"><td>Maple Leaf 1/10 oz (Noël 2024)</td><td>1</td><td class="poids">0 g</td></tr>
+
+<tr data-key="ML_1_10_DIV2">
+<td>M.Leaf 1/10 (Noël 2024)</td>
+<td>1</td>
+<td class="poids">0 g</td>
+</tr>
       <tr data-key="PHIL_1_10"><td>Philharmonique 1/10 oz</td><td>0</td><td class="poids">0 g</td></tr>
 
 <tr data-key="KOALA_1_10"><td>Koala 1/10 oz</td><td>5</td><td class="poids">0 g</td></tr>
 
-<tr data-key="KOOKABURRA_1_10"><td>Kookaburra 1/10 oz</td><td>5</td><td class="poids">0 g</td></tr>
+<tr data-key="KOOKABURRA_1_10">
+<td>Kookaburra 1/10 oz</td>
+<td>5</td>
+<td class="poids">0 g</td>
+</tr>
 
 </tbody>
 </table>
@@ -86,6 +95,9 @@ function getKey(label) {
   const l = label.toLowerCase();
 
   if (l.includes("m.leaf") && l.includes("⅒")) return "ML_1_10";
+
+ if (l.includes("2024") && l.includes("M.Leaf")) return "ML_1_10_DIV2";
+
   if (l.includes("m.leaf") && (l.includes("¼") || l.includes("⅟₄"))) return "ML_1_4";
   if (l.includes("philh")) return "PHIL_1_10";
   if (l.includes("koala")) return "KOALA_1_10";
