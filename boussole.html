@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boussole</title>
+
+<link rel="stylesheet" href="style.css?v=2060">
+
+<style>
+
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+    <div class="header-left">
+        <h2>🧭 Boussole du cycle</h2>
+    </div>
+
+    <div class="header-right">
+        <a href="index.html" class="badge">← Retour</a>
+    </div>
+
+</div>
+
+
+
+<div class="boussole-container">
+
+            <img src="bous.png"
+class="boussole-img" alt="Boussole" onclick="window.location.href='boussoleinfo.html?ratio=' + ratio">
+
+<div class="needle" id="needle"></div>
+</div>
+
+
+<div class="zone-wrapper">
+
+    <div class="boussole-zone" id="zone-text"></div>
+    <div class="boussole-value" id="ratio-text"></div>
+<br>
+</div>
+
+
+<div class="boussole-info" onclick="toggleInfo(event)">
+    ℹ️ Ratio Or / Argent
+    <div id="tooltip" class="tooltip">
+        <br>Ratio = Prix de l’once d’or ÷ Prix de l’once d’argent
+    </div>
+</div>
+
+
+
+<script>
+
+// ===== PARAM =====
+const params = new URLSearchParams(window.location.search);
+const ratio = parseFloat(params.get("ratio")) || 50;
+
+
+
+// ===== ZONE =====
+function getZone(r){
+    if(r >= 70) return "❄️ Hibernation";
+    if(r >= 50) return "🧊 Zone Nord";
+    if(r >= 47) return "🌤️ Transition";
+    if(r >= 45) return "☀️ Chaud";
+    if(r >= 40) return "🔥 Très chaud";
+    return "🚨 Extrême";
+}
+
+
+// ===== ANGLE ADAPTÉ À TON IMAGE =====
+// ici on utilise un angle vertical
+
+
+
+function getAngle(r){
+
+    if(isNaN(r)) return 0;
+
+    if(r <= 15) return -180;
+    if(r >= 120) return 0;
+
+    const points = [
+   { r: 15, a: -180 },
+   { r: 35, a: -150 },
+   { r: 40, a: -140 },
+   { r: 45, a: -120 },
+   { r: 50, a: -98 },
+   { r: 60, a: -73 },
+   { r: 70, a: -68.5 },
+   { r: 80, a: -64 },
+   { r: 90, a: -59.5 },
+   { r: 100, a: -55 },
+   { r: 110, a: -25 },
+   { r: 120, a: 0 }
+
+    ];
+
+    for(let i = 0; i < points.length - 1; i++){
+        const { r: r1, a: a1 } = points[i];
+        const { r: r2, a: a2 } = points[i + 1];
+
+        if(r >= r1 && r <= r2){
+            const t = (r - r1) / (r2 - r1);
+            return a1 + t * (a2 - a1);
+        }
+    }
+
+    return 0;
+}
+
+
+// ===== ANIMATION =====
+document.addEventListener("DOMContentLoaded", () => {
+
+    const needle = document.getElementById("needle");
+    const angle = getAngle(ratio);
+
+    needle.style.transition = "transform 1.2s cubic-bezier(0.22,1,0.36,1)";
+    needle.style.transform =
+    `translate(-50%, -100%) rotate(${angle}deg)`;
+
+    document.getElementById("zone-text").innerText = getZone(ratio);
+
+    document.getElementById("ratio-text").innerText =
+        ratio.toFixed(2).replace(".", ",");
+
+});
+
+
+function toggleInfo(event) {
+    event.stopPropagation(); // 🔥 empêche la fermeture immédiate
+    const el = document.getElementById("tooltip");
+    el.classList.toggle("show");
+}
+
+
+document.addEventListener("click", (e) => {
+    const tooltip = document.getElementById("tooltip");
+    const info = document.querySelector(".boussole-info");
+
+    if (!info.contains(e.target)) {
+        tooltip.classList.remove("show");
+    }
+});
+
+</script>
+</body>
+</html>

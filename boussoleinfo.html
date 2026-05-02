@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boussole — Lecture</title>
+
+<link rel="stylesheet" href="style.css?v=2070">
+
+<style>
+
+/* ===== PAGE SPECIFIQUE ===== */
+.boussole-info-container {
+    max-width: 900px;
+    margin: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.section {
+    background: linear-gradient(145deg, #0b1220, #020617);
+    border-radius: 14px;
+    padding: 12px;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+
+.section h3 {
+    margin-bottom: 6px;
+}
+
+.zone-title {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.zone-note {
+    margin-top: 6px;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+/* couleurs zones */
+.nord { border-left: 4px solid #38bdf8; }
+.pivot { border-left: 4px solid #94a3b8; }
+.sud1 { border-left: 4px solid #facc15; }
+.sud2 { border-left: 4px solid #fb923c; }
+.sud3 { border-left: 4px solid #ef4444; }
+.sud4 { border-left: 4px solid #b91c1c; }
+
+.principe {
+    text-align: center;
+    font-size: 13px;
+    opacity: 0.85;
+    line-height: 1.5;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+
+<div class="header-left">
+      <h2>🧭 Lecture du cycle</h2>
+      <small>Comprendre le ratio Or / Argent</small>
+</div>
+
+<div class="header-right">
+<a id="back-btn" href="#" class="badge">← Retour</a>
+</div>
+
+
+</div>
+
+<div class="boussole-info-container">
+
+<!-- NORD -->
+
+<div class="section nord">
+    <center>
+        <div class="zone-title">☃️ NORD</div>    
+        <div class="zone-title">⬆️ ≥ 60 → ≥120 (Froid / Hibernation)</div>
+        <div class="zone-title">⬆️ 50 → 59 (Nord fragile)</div>
+    </center>
+
+
+
+<p>Argent : ignoré monétairement</p>
+<p>Or : refuge dominant</p>
+<p>Temps : long, stable, habitable</p>
+
+<div class="zone-note">👉 Phase de patience et d’accumulation (Ratio élevé)</div>
+
+
+</div>
+
+<!-- BASCULE -->
+
+<div class="section pivot">
+    <center>
+    <div class="zone-title">⚖️ ≈ 50 (Frontière climatique)</div>
+    </center>    
+    <p>Changement de climat (pas un signal)</p>
+</div>
+
+<!-- SUD TEMPÉRÉ -->
+
+<div class="section sud1">
+    <center>
+
+    <div class="zone-title">🔥 50 – 45 (Sud tempéré)</div>
+    </center>
+
+
+<p>Argent : réintégration monétaire</p>
+<p>Début de visibilité, sans excès, mouvement propre</p>
+
+<div class="zone-note">👉 Zone saine du cycle où l’argent revient, sans hystérie, sans surchauffe.</div>
+
+<p>Or : étalon stable, liquidité maximale</p>
+
+
+</div>
+
+<!-- SUD CHAUD -->
+
+<div class="section sud2">
+    <center>
+    <div class="zone-title">🔥🔥 45 – 40 (Sud chaud)</div>
+    </center>
+
+<p>Argent : double dynamique (monétaire + industrielle)</p>
+<p>Volatilité en hausse, narratif en formation</p>
+
+<div class="zone-note">👉 Début de l’emballement</div>
+
+<p>Or : ancrage, encore attractif</p>
+
+
+</div>
+
+<!-- SUD TRÈS CHAUD -->
+
+<div class="section sud3">
+    <center>
+    <div class="zone-title">🔥🔥🔥 < 40 (Sud très chaud)</div>
+    </center>
+
+<p>Argent : sur-désiré, forte volatilité</p>
+<p>Comportement émotionnel</p>
+
+<div class="zone-note">👉 Début des tensions réelles</div>
+
+<p>Or : redevient refuge</p>
+
+
+</div>
+
+<!-- CANICULE -->
+
+<div class="section sud4">
+    <center>
+    <div class="zone-title">🌋 35 → 10 (Canicule)</div>
+    </center>
+
+<p>Argent : excès manifeste, instabilité</p>
+<p>Surmédiatisation</p>
+
+<div class="zone-note">👉 Rotation naturelle : Argent → Or</div>
+
+<p>Or : refuge liquide</p>
+
+
+</div>
+
+<!-- PRINCIPE -->
+
+<div class="section principe">
+    <h3>🧠 Principe fondamental</h3>
+
+
+<p>
+    Le ratio ne donne pas un signal immédiat.<br>
+    Il décrit un climat.
+</p>
+
+<p>
+    Plus le ratio baisse → plus l’émotion monte.<br>
+    Plus il remonte → plus le calme revient.
+</p>
+
+
+</div>
+
+</div>
+</div>
+
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const ratio = parseFloat(params.get("ratio")) || 50;
+
+    document.getElementById("back-btn").href =
+        "boussole.html?ratio=" + ratio;
+});
+
+</script>
+
+</body>
+</html>
