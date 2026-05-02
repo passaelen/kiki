@@ -45,7 +45,8 @@
       <tr data-key="ML_1_4"><td>Maple Leaf 1/4 oz</td><td>0</td><td class="poids">0 g</td></tr>
       <tr data-key="ML_1_10"><td>Maple Leaf 1/10 oz</td><td>0</td><td class="poids">0 g</td></tr>
       <tr data-key="PHIL_1_10"><td>Philharmonique 1/10 oz</td><td>0</td><td class="poids">0 g</td></tr>
-      <tr data-key="KOALA_1_10"><td>Koala 1/10 oz</td><td>10</td><td class="poids">0 g</td></tr>
+      <tr data-key="KOALA_1_10"><td>Koala 1/10 oz</td><td>5</td><td class="poids">0 g</td></tr>
+<tr data-key="KOOKABURRA_1_10"><td>Kookaburra 1/10 oz</td><td>5</td><td class="poids">0 g</td></tr>
 </tbody>
 </table>
 
@@ -85,6 +86,7 @@ function getKey(label) {
   if (l.includes("m.leaf") && (l.includes("¼") || l.includes("⅟₄"))) return "ML_1_4";
   if (l.includes("philh")) return "PHIL_1_10";
   if (l.includes("koala")) return "KOALA_1_10";
+if (l.includes("Kookaburra")) return "KOOKABURRA_1_10";
 
   return "OTHER";
 }
@@ -109,6 +111,7 @@ function getUnitWeight(key) {
     case "ML_1_10":
     case "PHIL_1_10":
     case "KOALA_1_10":
+    case "KOOKABURRA_1_10":
       return 3.11;
 
     case "ML_1_4":
