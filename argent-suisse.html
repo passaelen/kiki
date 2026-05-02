@@ -42,7 +42,7 @@
           <td colspan="3"><strong>🧱 Lingots</strong></td>
         </tr>
 
-        <tr data-label="L. 1Kg."><td>Lingot Argent 1 kg</td><td>1</td><td class="poids">0 g</td></tr>
+        <tr data-label="P. 1Kg."><td>Pièce Argent 1 kg</td><td>1</td><td class="poids">0 g</td></tr>
 		</tbody>  
 </table>       
 
@@ -69,13 +69,13 @@
 // 🔹 données
 const data = typeof metaux !== "undefined" ? metaux : [];
 
-// 🔹 filtre ARGENT Suisse
-const argentSuisse = data.filter(m => m.type === "ARGENT" && m.loc === "Belgique");
+// 🔹 filtre ARGENT Belgique
+const argentBelgique = data.filter(m => m.type === "ARGENT" && m.loc === "Belgique");
 
 // 🔹 mapping
 const map = {};
 
-argentSuisse.forEach(m => {
+argentBelgique.forEach(m => {
   if (!map[m.label]) {
     map[m.label] = { poids: 0, total: 0 };
   }
@@ -88,7 +88,7 @@ argentSuisse.forEach(m => {
 let totalPoids = 0;
 let totalValeur = 0;
 
-argentSuisse.forEach(m => {
+argentBelgique.forEach(m => {
   totalPoids += m.poids || 0;
   totalValeur += m.tot || 0;
 });
