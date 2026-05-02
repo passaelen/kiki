@@ -1,0 +1,97 @@
+/* === BASE UI === */
+#alert-text {
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+:root {
+  --or-suisse: #facc15;
+  --or-belgique: #fde68a;
+  --argent: #9ca3af;
+
+  --etf-monde: #38bdf8;
+  --etf-seniors: #E0B0FF;  /* Mauve classique - Parme */
+  --etf-juniors: #F2E6F5;  /* mauve très clair */
+
+  --ratio-froid: #9ca3af;
+  --ratio-moyen: #f59e0b;
+  --ratio-chaud: #ef4444;
+  --ratio-hover: #d1d5db;
+  --ratio-hover-glow: rgba(56,189,248,0.6);
+
+  --donut-gap: rgba(2,6,23,0.75);
+
+  /* ✅ ICI le FIX */
+  --perf-positive: #22c55e;
+  --perf-negative: #ef4444;
+
+  --bpgdm-neutral: #fb923c;
+  --bpgdm-accum: #4ade80;
+
+
+  --market-extreme-low: #ef4444;
+  --market-low: #fb923c;
+  --market-neutral: #94a3b8;
+  --market-high: #22c55e;
+  --market-extreme-high: #facc15;
+
+
+
+  --chart-up: #22c55e;
+  --chart-down: #ef4444;
+  --chart-up-soft: #4ade80;
+  --chart-down-soft: #f87171;
+
+  --chart-mm: #a78bfa;
+
+  --chart-tooltip-bg: #0f172a;
+  --chart-tooltip-border: #38bdf8;
+  --chart-text: #e2e8f0;
+
+  --chart-white: #ffffff;
+}
+
+
+/* RATIO */
+.ratio-froid {
+  color: var(--ratio-froid);
+}
+
+.ratio-moyen {
+  color: var(--ratio-moyen);
+}
+
+.ratio-chaud {
+  color: var(--ratio-chaud);
+}
+
+
+/* DOTS */
+ .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot-or-suisse { background: var(--or-suisse); }
+.dot-or-belgique { background: var(--or-belgique); }
+.dot-argent { background: var(--argent); }
+
+.dot-monde { background: var(--etf-monde); }
+.dot-seniors { background: var(--etf-seniors); }
+.dot-juniors { background: var(--etf-juniors); }
+
+
+/* GAINS - PERF */
+.positive { color: var(--perf-positive); font-weight: 600; transition: color 0.3s ease;}
+.negative { color: var(--perf-negative); font-weight: 600; transition: color 0.3s ease;}
+
+
+
+
+
+/* BPGDM */
+.bpgdm-buy { color: var(--perf-positive); }
+.bpgdm-sell { color: var(--perf-negative); }
+.bpgdm-neutral { color: var(--bpgdm-neutral); }
+.bpgdm-accum { color: var(--bpgdm-accum); }
