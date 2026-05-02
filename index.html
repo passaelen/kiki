@@ -1472,14 +1472,16 @@ function setValueColor(id, value){
 
     el.innerText = euroSigned(value);
 
+    // reset
     el.classList.remove("positive", "negative");
+    el.style.opacity = "1";
 
     if(value > 0){
         el.classList.add("positive");
     } else if(value < 0){
         el.classList.add("negative");
     } else {
-        el.style.opacity = "0.6"; // neutre visuel
+        el.style.opacity = "0.6";
     }
 }
 
