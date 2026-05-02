@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="couleurs.css?v=19">
+<link rel="stylesheet" href="style.css?v=19">   
+<style>
+
+.table-metaux {
+    width: 100%;
+    table-layout: fixed;
+}
+
+/* padding plus compact */
+.table-metaux th,
+.table-metaux td {
+    padding: 8px 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* colonnes fixes */
+.table-metaux th:nth-child(1),
+.table-metaux td:nth-child(1) { width: 75px; } /* DATE ancienne valeur 55 */
+
+.table-metaux th:nth-child(2),
+.table-metaux td:nth-child(2) { width: 40px; } /* TYPE */
+
+.table-metaux th:nth-child(3),
+.table-metaux td:nth-child(3) { width: 40px; } /* LOC */
+
+.table-metaux th:nth-child(4),
+.table-metaux td:nth-child(4) { width: 40px; } /* POIDS */
+
+/* 🔥 LABEL = FLEXIBLE */
+.table-metaux th:nth-child(5),
+.table-metaux td:nth-child(5) {width: auto;font-size: 12px; opacity: 0.8;}
+
+/* 🔥 TOTAL toujours visible */
+.table-metaux th:nth-child(6),
+.table-metaux td:nth-child(6) {width: 55px; text-align: right; padding-right: 2px;
+}
+</style>
+
+
+    <title>Achats</title>
+
+
+
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- HEADER -->
+    <div class="header">
+        <div class="header-left">
+            <h2>🧾 Achats Métaux</h2>
+            <small>Journal d'exécution</small>
+        </div>
+        <div class="header-right">
+            <a href="index.html" class="badge">← Retour</a>
+        </div>
+    </div>
+
+<!-- TABLE -->
+    <div class="card">
+        <h3>Historique</h3>
+              <div class="table-scroll">
+                    <table class="table-metaux">
+                            <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Loc</th>
+                                        <th>Poids</th>
+                                        <th>Label</th>
+                                        <th>Tot</th>
+
+                                    </tr>
+                            </thead>
+                            <tbody id="table-metaux"></tbody>
+                    </table>
+                 </div>
+
+                      <div class="total-line">
+                        <span>Total investi</span>
+                        <span id="total-metaux"></span>
+                      </div>
+    </div> 
+</div> 
+
+
+<script src="achats.js"></script>
+
+<script>
+// ===== HELPERS =====
+function euro(v){
+    return v.toLocaleString('fr-BE', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }) + " €";
+}
+
+// ===== COULEUR TYPE =====
+function getClassByType(type, loc){
+
+    const t = (type || "").toLowerCase();
+    const l = (loc || "").toLowerCase();
+
+    if (t === "argent") {
+        return "dot-argent";
+    }
+
+    if (t === "or") {
+        if (l.includes("suisse")) return "dot-or-suisse";
+        if (l.includes("bel")) return "dot-or-belgique";
+    }
+
+    return "dot-argent";
+}
+
+
+// ===== RENDER =====
+function renderAchats(){
+
+    const tbody = document.getElementById("table-metaux");
+
+    // tri DESC (plus récent en haut)
+    const sorted = [...metaux].sort((a,b)=>{
+        return new Date(b.date.split("/").reverse().join("-")) 
+             - new Date(a.date.split("/").reverse().join("-"));
+    });
+
+    tbody.innerHTML = "";
+    sorted.forEach(a => {
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${a.date}</td>
+            <td>
+<span class="dot ${getClassByType(a.type, a.loc)}"></span>
+                ${a.type === "OR" ? "Or" : "Argent"}
+            </td>
+            <td class="center">${a.loc}</td>
+            <td class="center">${a.poids}</td>
+            <td class="center">${a.label}</td>
+            <td class="amount">${euro(a.tot)}</td>
+            `;
+
+        tbody.appendChild(row);
+    });
+
+    const total = sorted.reduce((sum, a) => sum + (a.tot || 0), 0);
+
+// 🔥 FIX FLOAT
+const totalFixed = Math.round((total + Number.EPSILON) * 100) / 100;
+
+document.getElementById("total-metaux").innerText = euro(totalFixed);
+
+}
+
+renderAchats();
+
+
+
+</script>
+
+</body>
+</html>
