@@ -10,8 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portefeuille</title>
 
-<link rel="stylesheet" href="couleurs.css?v=2">
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="couleurs.css?v=202630042011">
+<link rel="stylesheet" href="style.css?v=202630042011">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
@@ -424,7 +424,7 @@ async function fetchPrices(){
 
     async function fetchETFPrices(){
 
-    const API_KEY = "7113fccd86b6084a141fe9d4fa27ab55253b8d5fc092badcacc3f33b9710ff16";
+    const API_KEY = "e10aefe097fe40fba25f4e129bdf0c4f";
 
     // ===== CACHE =====
     const cache = JSON.parse(localStorage.getItem("etfPrices"));
@@ -1680,4 +1680,352 @@ window.chart10j = new Chart(ctx, {
 
                 pointRadius: (context) => {
                  const label = context.chart.data.labels[context.dataIndex];
-         
+                 if (hasAchatLabel(label)) {return 4 + Math.sin(pulse) * 2;}
+                 return 3;
+                },
+
+
+
+
+
+                pointHitRadius: 20,
+
+                pointHoverRadius: 12,
+                pointHoverBorderWidth: 3,
+                pointHoverBorderColor: COLORS.chart_white,
+
+                pointHoverBackgroundColor: (context) => {
+                    const i = context.dataIndex;
+                    const diff = enriched[i]?.diff || 0;
+                    return diff >= 0 ? COLORS.chart_up_soft : COLORS.chart_down_soft;
+                },
+
+                pointBackgroundColor: (context) => {
+                    const i = context.dataIndex;
+                    const diff = enriched[i]?.diff || 0;
+                    return diff >= 0 ? COLORS.chart_up : COLORS.chart_down;
+                },
+
+                pointBorderWidth: (context) => {
+                   const label = context.chart.data.labels[context.dataIndex];
+                   return hasAchatLabel(label) ? 2 : 0;}
+               },
+
+            {
+                data: movingAvg,
+                tension: 0.4,
+                borderColor: COLORS.chart_mm,
+                borderWidth: 2,
+                pointRadius: 0,
+                borderDash: [6, 6],
+                fill: false
+            }
+        ]
+    },
+
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+
+        interaction: {
+            mode: "index",
+            intersect: false,
+            axis: "x"
+        },
+
+        plugins: {
+            legend: { display: false },
+
+            tooltip: {
+                backgroundColor: COLORS.chart_tooltip_bg,
+                borderColor: COLORS.chart_tooltip_border,
+                borderWidth: 1,
+                titleColor: COLORS.chart_text,
+                bodyColor: COLORS.chart_text,
+                displayColors: false,
+
+                filter: ctx => ctx.datasetIndex === 0,
+
+                callbacks: {
+                    label: (context) => {
+                    const i = context.dataIndex;
+                    const point = enriched[i];
+                    if (!point) return "";
+
+                    const value = point.total.toLocaleString('fr-BE') + " €";
+
+                    const diff = point.diff || 0;
+                    const pct = point.pct || 0;
+
+                    const label = context.chart.data.labels[i];
+                    const achatsJour = getAchatsByLabel(label);
+
+                    let lines = [value];
+
+                    // 📊 variation
+                    if (Math.abs(diff) >= 1) {
+                        const sign = diff >= 0 ? "+" : "";
+                        lines.push(
+                            `${sign}${diff.toLocaleString('fr-BE', { maximumFractionDigits: 0 })} € ` +
+                            `(${sign}${pct.toFixed(2).replace('.', ',')}%)`
+                        );
+                    }
+
+                    // 🔥 ACHATS
+                    if (achatsJour.length > 0) {
+                        lines.push(""); // espace
+                        lines.push("🟢 ACHAT" + (achatsJour.length > 1 ? ` (${achatsJour.length})` : ""));
+
+                        achatsJour.forEach(a => {
+                            let line = `• ${a.label}`;
+
+                            if (a.montant) {
+                                line += ` — ${Math.round(a.montant)} €`;
+                            }
+
+                            lines.push(line);
+                        });
+                    }
+
+                    return lines;
+                }// !!! Fin Label  
+                }// !!! Fincallbacks
+            }
+        },
+
+        scales: {
+            x: {
+                ticks: { color: COLORS.chart_text },
+                grid: { color: "rgba(148,163,184,0.05)" }
+            },
+            y: {
+                ticks: {
+                    color: COLORS.chart_text,
+                    callback: v => v.toLocaleString('fr-BE') + " €"
+                },
+                grid: { color: "rgba(148,163,184,0.05)" }
+            }
+        },
+
+        animation: {
+            duration: 600,
+            easing: "easeOutCubic"
+        },
+
+        transitions: {
+            active: {
+                animation: {
+                    duration: 300
+                }
+            }
+        }
+    }
+}); // fin new Chart
+} // ✅ ICI → fermeture de renderChart()
+
+
+// ===== START =====
+window.addEventListener("DOMContentLoaded", () => {
+
+    state.timeframe = 10;
+
+    init();
+
+    // ===== REFRESH BUTTON =====
+    const refreshBtn = document.getElementById("refresh-btn");
+
+    if (refreshBtn) {
+        refreshBtn.addEventListener("click", () => {
+
+            refreshBtn.style.transform = "rotate(360deg)";
+            refreshBtn.style.transition = "0.6s";
+
+            setTimeout(() => {
+                refreshBtn.style.transform = "rotate(0deg)";
+            }, 600);
+
+            init();
+        });
+    }
+
+// ===== CLICK DONUT METAUX =====
+    const donut = document.getElementById("donut-metaux");
+
+if (donut) {
+
+    const labelM = document.querySelector("#donut-metaux .donut-label");
+
+    let isOpen = false;
+
+    donut.addEventListener("click", () => {
+
+        if (!labelM) return;
+
+        const pf = state.portfolio;
+        const p = state.prices;
+
+        if (!pf || !p) return;
+
+        const orSuisse = pf.or_suisse_g * p.gold_per_g;
+        const orBelgique = pf.or_belgique_g * p.gold_per_g;
+        const argent = pf.argent_g * p.silver_per_g * silverRealFactor;
+
+        if (!isOpen) {
+
+            labelM.innerHTML = `
+                <div class="content">
+                    <div>🇨🇭 ${euro(orSuisse)}</div>
+                    <div>🇧🇪 ${euro(orBelgique)}</div>
+<div>
+     <span class="dot dot-argent">
+     </span> ${euro(argent)}
+</div>
+     <small>(revente)</small>
+                </div>
+            `;
+
+        } else {
+
+
+// retour affichage normal
+
+const totalMetaux = orSuisse + orBelgique + argent;
+
+    labelM.innerHTML = `
+        <div>
+            <small>Métaux</small>
+            <span>${euro(totalMetaux)}</span>
+        </div>
+    `;
+}
+
+
+
+        isOpen = !isOpen;
+    });
+}
+
+
+
+// ===== CLICK DONUT ETF =====
+const donutETF = document.querySelector(".donut.etf");
+
+if (donutETF) {
+
+    const labelE = document.getElementById("label-etf");
+
+    let isOpenETF = false;
+
+    donutETF.addEventListener("click", () => {
+
+        if (!labelE) return;
+
+        const etf = state.etf;
+        const pe = state.etfPrices;
+
+        if (!etf || !pe) return;
+
+        const vMonde = etf.monde.parts * pe.monde;
+        const vSeniors = etf.seniors.parts * pe.seniors;
+        const vJuniors = etf.juniors.parts * pe.juniors;
+
+        const totalETF = vMonde + vSeniors + vJuniors || 1;
+
+        const pMonde = (vMonde / totalETF) * 100;
+        const pSeniors = (vSeniors / totalETF) * 100;
+        const pJuniors = (vJuniors / totalETF) * 100;
+
+        if (!isOpenETF) {
+labelE.innerHTML = `
+    <div class="content">
+        <div><span class="dot dot-monde"></span> ${euro(vMonde)}</div>
+        <div><span class="dot dot-seniors"></span> ${euro(vSeniors)}</div>
+        <div><span class="dot dot-juniors"></span> ${euro(vJuniors)}</div>
+    </div>
+`;
+
+        } else {
+
+            labelE.innerHTML = `
+                <div>
+                    <small>ETF</small>
+                    <span>${euro(totalETF)}</span>
+                </div>
+            `;
+        }
+
+        isOpenETF = !isOpenETF;
+    });
+}
+
+
+
+
+
+
+
+    // ===== CLICK RATIO =====
+    const ratioEl = document.getElementById("ratio");
+
+    if (ratioEl) {
+        ratioEl.addEventListener("click", () => {
+            if (!state.ratio) return;
+            window.location.href = "boussole.html?ratio=" + state.ratio;
+        });
+    }
+
+    // ===== TIMEFRAME =====
+    document.querySelectorAll(".tf").forEach(btn => {
+        btn.addEventListener("click", () => {
+
+            document.querySelectorAll(".tf").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+
+            state.timeframe = parseInt(btn.dataset.days);
+
+            const title = document.getElementById("chart-title");
+            if (title) {
+                title.innerText = `Évolution ${state.timeframe} jours`;
+            }
+
+            renderChart();
+        });
+    });
+
+});
+
+</script>
+
+
+
+<script id="b7f0w9">
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(() => console.log("SW OK"))
+      .catch(err => console.log("SW error", err));
+  });
+}
+</script>
+
+
+
+<script>
+function goToPage(el, url) {
+    el.style.transform = "scale(0.97)";
+    el.style.opacity = "0.6";
+
+    setTimeout(() => {
+        window.location.href = url;
+    }, 120);
+}
+</script>
+
+
+
+
+
+
+
+</body>
+</html>
