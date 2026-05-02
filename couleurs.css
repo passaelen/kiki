@@ -5,13 +5,13 @@
 }
 
 :root {
-  --or-suisse: #facc15;
-  --or-belgique: #fde68a;
+  --or-suisse: #fde68a;
+  --or-belgique: #facc15;
   --argent: #9ca3af;
 
   --etf-monde: #38bdf8;
   --etf-seniors: #E0B0FF;  /* Mauve classique - Parme */
-  --etf-juniors: #F2E6F5;  /* mauve très clair */
+  --etf-juniors: #FFC0CB;  /* rose classique */
 
   --ratio-froid: #9ca3af;
   --ratio-moyen: #f59e0b;
