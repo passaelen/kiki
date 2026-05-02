@@ -8,6 +8,4 @@ const metaux = [
 {date: "03/04/2025", type: "OR", loc: "Bel.", tot: 1494.02, poids: 15.55, label: "⅒ Kookaburra"},
 {date: "09/04/2025", type: "OR", loc: "Bel.", tot: 1494.03, poids: 15.55, label: "⅒ Koala"},
 {date: "24/12/2025", type: "ARGENT", loc: "Belgique", tot: 0.0, poids: 1000.0, label: "P. 1Kg."}
-
-
  ]; 
