@@ -43,4 +43,4 @@ const metaux = [
      {date: "29/03/2020", type: "OR", loc: "Suisse", tot: 0.0, poids: 2.00, label: "L. 1g. Umicore"},
      {date: "29/03/2020", type: "OR", loc: "Suisse", tot: 0.0, poids: 15.55, label: "P. ⅒ Philh."},
   {date: "29/03/2020", type: "ARGENT", loc: "Suisse", tot: 3379.88, poids: 6000.0, label: "L. 1Kg."}
- ];
+ ]; 
