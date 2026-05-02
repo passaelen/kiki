@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>🇧🇪 Or Belgique</title>
+  <link rel="stylesheet" href="style.css?v=7">
+  <link rel="stylesheet" href="couleurs.css?v=7">
+</head>
+
+<body><!-- HEADER -->
+<div class="header">
+  <div class="header-left"><h2>🇧🇪 Or Belgique</h2><small>Stock privé</small></div>
+  <div class="header-right"><a href="index.html" class="badge">← Retour</a></div>
+</div>
+
+<div class="container"><!-- TOTAL -->
+<div class="highlight">
+  <small>Total Or Belgique</small>
+  <h2 id="totalBelgique">0 g</h2>
+</div>
+
+<!-- TABLE -->
+<div class="card">
+  <h3>Or Privé</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Qté</th>
+        <th>Poids</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      <!-- PIÈCES -->
+      <tr>
+        <td colspan="3"><strong>🪙 Pièces</strong></td>
+      </tr>
+
+      <tr data-key="ML_1_4"><td>Maple Leaf 1/4 oz</td><td>2</td><td class="poids">0 g</td></tr>
+      <tr data-key="ML_1_10"><td>Maple Leaf 1/10 oz</td><td>29</td><td class="poids">0 g</td></tr>
+      <tr data-key="PHIL_1_10"><td>Philharmonique 1/10 oz</td><td>5</td><td class="poids">0 g</td></tr>
+      <tr data-key="KOALA_1_10"><td>Koala 1/10 oz</td><td>2</td><td class="poids">0 g</td></tr>
+</tbody>
+</table>
+
+<br>
+
+
+  <div class="total-line">
+    <span><span class="dot dot-or-belgique"></span> Total des achats en Belgique : </span>
+    <span id="totalValeur">0 €</span>
+  </div>
+
+  <div class="total-sub">
+          <span id="tableTotal">0 g</span>
+      <span id="prixMoyen">0 €/g</span>
+  </div>
+
+</div><!-- Fin CARD -->
+</div><!-- Fin container -->  
+
+
+
+<script src="achats.js"></script>
+
+<script>
+
+// 🔹 données
+const data = typeof metaux !== "undefined" ? metaux : [];
+
+// 🔹 filtre OR Belgique
+const orBelgique = data.filter(m => m.type === "OR" && m.loc === "Bel.");
+
+// 🔹 regroupement
+function getKey(label) {
+  const l = label.toLowerCase();
+
+  if (l.includes("m.leaf") && l.includes("⅒")) return "ML_1_10";
+  if (l.includes("m.leaf") && (l.includes("¼") || l.includes("⅟₄"))) return "ML_1_4";
+  if (l.includes("philh")) return "PHIL_1_10";
+  if (l.includes("koala")) return "KOALA_1_10";
+
+  return "OTHER";
+}
+
+const grouped = {};
+
+orBelgique.forEach(m => {
+  const key = getKey(m.label);
+
+  if (!grouped[key]) {
+    grouped[key] = { poids: 0, total: 0 };
+  }
+
+  grouped[key].poids += m.poids || 0;
+  grouped[key].total += m.tot || 0;
+});
+
+
+// 🔹 fonction poids unitaire
+function getUnitWeight(key) {
+  switch (key) {
+    case "ML_1_10":
+    case "PHIL_1_10":
+    case "KOALA_1_10":
+      return 3.11;
+
+    case "ML_1_4":
+      return 7.78;
+
+    default:
+      return 1;
+  }
+}
+
+
+// 🔹 injection tableau
+document.querySelectorAll("tr[data-key]").forEach(row => {
+  const key = row.dataset.key;
+  const item = grouped[key];
+
+  if (!item) return;
+
+  const poidsCell = row.querySelector(".poids");
+  if (poidsCell) {
+    poidsCell.textContent = item.poids.toFixed(2) + " g";
+  }
+
+   // 🔥 quantité réelle
+  const unit = getUnitWeight(key);
+  const qty = unit > 0 ? item.poids / unit : 0;
+
+  row.children[1].textContent = Number((qty).toFixed(0));
+});
+
+
+// 🔹 totaux
+let totalPoids = 0;
+let totalValeur = 0;
+
+Object.values(grouped).forEach(item => {
+  totalPoids += item.poids;
+  totalValeur += item.total;
+});
+
+
+// 🔹 prix moyen
+const prixMoyen = totalPoids > 0 ? totalValeur / totalPoids : 0;
+
+// 🔹 affichage
+document.getElementById("totalBelgique").textContent =
+  totalPoids.toFixed(2) + " g";
+
+document.getElementById("tableTotal").textContent =
+  totalPoids.toFixed(2) + " g";
+
+document.getElementById("totalValeur").textContent =
+  totalValeur.toFixed(2) + " €";
+
+document.getElementById("prixMoyen").textContent =
+  prixMoyen.toFixed(2) + " €/g";
+
+</script>
+</body>
+</html>
