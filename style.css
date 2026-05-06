@@ -1511,3 +1511,7 @@ body.focus-mode .container > .kpi-grid,
 body.focus-mode .container > .alert-box,
 body.focus-mode .container > .total-wrapper{display:none;}
 body.focus-mode #chart-10j{height:75vh !important;}
+.tf{transition:transform .15s ease, box-shadow .2s ease, background .2s ease;}
+.tf:active{transform:scale(.97);}
+.tf.active{box-shadow:0 0 0 1px rgba(125,211,252,.35), 0 0 18px rgba(56,189,248,.30);}
+#focus-btn{font-size:17px;}
