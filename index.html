@@ -10,9 +10,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portefeuille</title>
 
-<link rel="stylesheet" href="couleurs.css?v=220">
-<link rel="stylesheet" href="style.css?v=220">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="couleurs.css?v=20260308">
+<link rel="stylesheet" href="style.css?v=20260308">
+    <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -22,12 +22,13 @@
 <!-- HEADER -->
 <div class="header">
     <div class="header-left">
-        <h2>💼 Portefeuille 🐣 Kiki</h2>
-        <small>Or · Argent</small>
+        <h2>💼 Portefeuille</h2>
+        <small>Or · Argent · ETF</small>
     </div>
 
     <div class="header-actions">
-        <div id="refresh-btn" class="refresh">⟳</div>
+        <div id="refresh-btn" class="refresh" title="Rafraîchir">⟳</div>
+        <div id="focus-btn" class="refresh" title="Mode focus">🎯</div>
         <div id="variation" class="badge-perf"></div>
     </div>
 </div>
@@ -171,7 +172,7 @@
             <span id="p-juniors"></span>
         </div>
 
-
+     
     </div>
 </div>
 
@@ -183,7 +184,7 @@
 
 <!-- GRAPH -->
 <div class="card">
-    <h3 id="chart-title">Évolution 10 jours</h3>
+    <h3 id="chart-title" title="Touchez le graphique pour agrandir / réduire">Évolution 10 jours</h3>
 
     <canvas id="chart-10j"></canvas>
 
@@ -191,6 +192,7 @@
         <button class="tf active" data-days="10">10J</button>
         <button class="tf" data-days="30">30J</button>
         <button class="tf" data-days="90">90J</button>
+        <button class="tf" data-days="180">180J</button>
     </div>
 </div>
 
@@ -211,13 +213,13 @@
 <tr>
 <th>Type</th>
 <th>Stockage</th>
-<th>Gr.</th>
+<th>Qté</th>
 <th>Spot</th>
 <th>Gain €</th>
 <th>Perf %</th>
 </tr>
 
-<tr>
+<tr onclick="goToPage(this, 'or-suisse.html')">
     <td>Or</td>
     <td>Suisse</td>
     <td id="q-or-suisse"></td>
@@ -237,8 +239,8 @@
         </tr>
 
 
-<tr onclick="goToPage(this, 'argent-belgique.html')">
-        <td>Argent</td><td>Belgique</td>
+<tr onclick="goToPage(this, 'argent-suisse.html')">
+        <td>Argent</td><td>Suisse</td>
         <td id="q-argent"></td>
         <td id="p-argent-g"></td>
         <td id="benef-argent"></td>
@@ -259,8 +261,8 @@
 
 
     <div class="etf-header">
-         <h3>ETF <small>(clôtures veille)</small></h3>
-         <div id="bpgdm" class="bpgdm-badge">--%</div>
+         <h3 onclick="goToPage(this, 'achatsetf.html')">ETF <small>(clôtures veille)</small></h3>
+         <div id="bpgdm" class="bpgdm-badge" title="BPGDM : indicateur de momentum mines aurifères">--%</div>
     </div>
 
 <!-- 
@@ -360,7 +362,7 @@ function normalizeDateFR(date) {
   const [day, month] = date.split("/");
   return `${day.padStart(2,'0')}/${month.padStart(2,'0')}`;
 }
-
+ 
 function getAchatsByLabel(label) {
   return achats.filter(a => normalizeDateFR(a.date) === label);
 }
@@ -369,13 +371,13 @@ function hasAchatLabel(label) {
   return achats.some(a => normalizeDateFR(a.date) === label);
 }
 
-
+ 
 
 
 // ===== CONFIG =====
 const OZ_TO_G = 31.1035;
 // ajustement revente Suisse
-const silverRealFactor = 1.06; 
+const silverRealFactor = 0.965; 
 
 
 
@@ -386,7 +388,9 @@ const state = {
 
     portfolio: {},
     etf: {},
-    timeframe: 10
+    timeframe: 10,
+    isLoading: false,
+    refreshQueued: false
 };
 
 
@@ -402,6 +406,11 @@ function setText(id, value){
     if(DOM_CACHE[id]){
         DOM_CACHE[id].innerText = value;
     }
+}
+
+
+function setLoadingState(active){
+    document.body.classList.toggle("loading", !!active);
 }
 
 // ===== API =====
@@ -510,7 +519,7 @@ function parseCSV(text) {
 function calculate(){
 
     const p = state.prices;
-
+    
     const pf = state.portfolio;
     const etf = state.etf;
     const pe = state.etfPrices;
@@ -521,7 +530,7 @@ function calculate(){
         (pf.or_suisse_g + pf.or_belgique_g) * p.gold_per_g;
 
     const silverTotal =
-    pf.argent_g * p.silver_per_g * silverRealFactor;
+        pf.argent_g * p.silver_per_g;
 
     const ratio = p.gold_per_g / p.silver_per_g;
 
@@ -698,14 +707,14 @@ function getCombinedSignal(ratio, bpgdm){
 }
 
 
-
+ 
 
 
 function applyRatioColor(ratio){
 
     const el = document.getElementById("alert-text");
     if(!el) return;
-
+ 
         el.classList.remove("ratio-froid", "ratio-moyen", "ratio-chaud");
 
     if(ratio >= 50){
@@ -783,12 +792,12 @@ el.style.background = `
 
 
 
-
+ 
 function animateDonutETF(el, e1, e2, e3, duration = 800){
 
 console.log("ETF %:", e1, e2, e3);
 
-
+ 
  // 🔒 couper les micro valeurs
     e1 = e1 < 0.01 ? 0 : e1;
     e2 = e2 < 0.01 ? 0 : e2;
@@ -808,7 +817,7 @@ console.log("ETF %:", e1, e2, e3);
     e1 = (e1 / total) * 100;
     e2 = (e2 / total) * 100;
     e3 = (e3 / total) * 100;
-
+ 
     let start = null;
 
     function step(timestamp){
@@ -841,7 +850,7 @@ el.style.background = `
 
 
 
-
+ 
 
 // ===== RENDER KPI =====
 function renderKPI(data, p){
@@ -930,7 +939,7 @@ function renderTitles(data){
     const titleE = document.getElementById("title-etf");
 
     if (titleM) {
-
+        
 titleM.innerHTML = `Métaux <span>(${percent(data.pMetaux)})</span>`;
 
     }
@@ -971,6 +980,16 @@ function render(data){
 // ===== INIT =====
 async function init(){
 
+    if (state.isLoading) {
+        state.refreshQueued = true;
+        return;
+    }
+
+    state.isLoading = true;
+
+    setLoadingState(true);
+
+
     try{
         setText("total", "Chargement...");
         setText("or", "...");
@@ -979,8 +998,11 @@ async function init(){
 
 
 
-// 🔥 1. récupérer ton sheet AVANT
-const { history: historyList, bpgdmLive } = await fetchHistory();
+// 🔥 1. récupérer les données en parallèle
+const [{ history: historyList, bpgdmLive }, livePrices] = await Promise.all([
+    fetchHistory(),
+    fetchPrices()
+]);
 
 
 // 🔥 ON STOCKE
@@ -994,7 +1016,7 @@ state.momentum = last?.momentum || 0;
 state.goldClose = last?.goldClose || 0;
 state.silverClose = last?.silverClose || 0;
 
-
+        
 console.log("LAST:", last); // 👈 ICI
 console.log("BPGDM LIVE (G2):", bpgdmLive);
 
@@ -1003,7 +1025,7 @@ console.log("BPGDM LIVE (G2):", bpgdmLive);
 
 
 // 🔥 2. FORCER le sheet comme source principale
-state.prices = await fetchPrices();
+state.prices = livePrices;
 state.portfolio = DATA.portfolio;
 state.etf = DATA.etf;
 state.bpgdm = (bpgdmLive !== 0 ? bpgdmLive : last?.bpgdm);
@@ -1161,12 +1183,14 @@ if (variationEl) {
     variationEl.innerText = diffStr + " (" + pctStr + ")";
 
     // RESET
-    variationEl.classList.remove("positive", "negative");
+    variationEl.classList.remove("positive", "negative", "neutral");
 
     if (diff > 0) {
         variationEl.classList.add("positive");
     } else if (diff < 0) {
         variationEl.classList.add("negative");
+    } else {
+        variationEl.classList.add("neutral");
     }
 
     // animation
@@ -1185,6 +1209,15 @@ if (variationEl) {
     } catch(e){
         console.error("Erreur:", e);
         setText("total", "Erreur chargement");
+    } finally {
+        state.isLoading = false;
+        setLoadingState(false);
+
+        if (state.refreshQueued) {
+            state.refreshQueued = false;
+            init();
+
+        }
     }
 }
 
@@ -1220,6 +1253,24 @@ function getVariation(now, close){
 // ===== HISTORY =====
 async function fetchHistory(){
 
+    const CACHE_KEY = "historyCacheV1";
+    const CACHE_TTL_MS = 5 * 60 * 1000;
+
+    try {
+        const rawCache = localStorage.getItem(CACHE_KEY);
+        if (rawCache) {
+            const parsed = JSON.parse(rawCache);
+            if (parsed?.timestamp && (Date.now() - parsed.timestamp) < CACHE_TTL_MS) {
+                return {
+                    history: parsed.history || [],
+                    bpgdmLive: parsed.bpgdmLive || 0
+                };
+            }
+        }
+    } catch (e) {
+        console.warn("Cache history invalide", e);
+    }
+
     const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRPQxB1fKc-snH1FVmy4Vdmo5IRBLwxx-bFLTT2LraGehV1y8ht3ZPQUSVsLNZy6Q_MUoC36XM4lbQw/pub?gid=1311770820&single=true&output=csv";
 
     const res = await fetch(url);
@@ -1238,7 +1289,7 @@ async function fetchHistory(){
 
 console.log("HEADER:", rows[0]);
 console.log("ROW 1:", rows[1]);
-
+    
 
 
     const history = [];
@@ -1249,7 +1300,7 @@ console.log("ROW 1:", rows[1]);
         if (!row || row.length < 8) continue;
         const total = cleanNumber(row[1]);
         if (isNaN(total) || total < 1000) continue;
-
+        
         const date = row[0]?.trim();
         const monde = cleanNumber(row[2]);
         const seniors = cleanNumber(row[3]);
@@ -1260,9 +1311,9 @@ console.log("ROW 1:", rows[1]);
 
 const goldClose = cleanNumber(row[11]);   // colonne L
 const silverClose = cleanNumber(row[12]); // colonne M
-
+        
         console.log("ROW:", row);
-
+      
 
         if (date && total > 0) {
             history.push({
@@ -1284,6 +1335,16 @@ const silverClose = cleanNumber(row[12]); // colonne M
 
 console.log("HISTORY:", history);
 
+    
+    try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify({
+            timestamp: Date.now(),
+            history,
+            bpgdmLive
+        }));
+    } catch (e) {
+        console.warn("Impossible de sauvegarder le cache history", e);
+    }
 
     return {
         history,
@@ -1334,7 +1395,7 @@ function renderMarketState(score, momentum){
 
     let arrow = "→";
     let strength = "";
-
+    
     if(momentum > 0.15){
         arrow = "⬆️";
         strength = "Pression ⬆️ forte";
@@ -1355,7 +1416,7 @@ function renderMarketState(score, momentum){
     badge.innerText = `${state} ${arrow} - ${text} (clôtures veille)`;
     badge.style.color = color;
 
-
+    
 // 🔥 ajout dynamique du contexte
 // 🔥 1. construire le texte FINAL
 if(strength){
@@ -1365,9 +1426,9 @@ if(strength){
   badge.innerText = `${state} ${arrow} - ${text} (clôtures veille)`;
   badge.style.color = color;
   updateThemeColor(color);
-
+ 
   context.innerText = "";
-
+    
 }
 
 function updateThemeColor(color){
@@ -1378,7 +1439,7 @@ function updateThemeColor(color){
 }
 
 
-
+ 
 
 
 // ===== Render DONUTS =====
@@ -1428,7 +1489,7 @@ labelM.innerHTML = `
     setText("p-monde", percent(e1));
     setText("p-seniors", percent(e2));
     setText("p-juniors", percent(e3));
-
+ 
     const de = document.querySelector(".donut.etf .donut-inner");
 
     if(de){
@@ -1458,7 +1519,7 @@ labelE.innerHTML = `
 
 
 
-
+    
 // ===== Render TABLE =====
 function renderTables(data, p, pf, etf, pe){
 
@@ -1472,16 +1533,14 @@ function setValueColor(id, value){
 
     el.innerText = euroSigned(value);
 
-    // reset
     el.classList.remove("positive", "negative");
-    el.style.opacity = "1";
 
     if(value > 0){
         el.classList.add("positive");
     } else if(value < 0){
         el.classList.add("negative");
     } else {
-        el.style.opacity = "0.6";
+        el.style.opacity = "0.6"; // neutre visuel
     }
 }
 
@@ -1574,13 +1633,13 @@ setValueColor("benef-argent", benefArgent);
 let pulse = 0;
 
 setInterval(() => {
+  if (document.hidden || !window.chart10j) return;
+
   pulse += 0.1;
   if (pulse > Math.PI * 2) pulse = 0;
 
-  if (window.chart10j) {
-    window.chart10j.update();
-  }
-}, 100);
+  window.chart10j.update("none");
+}, 120);
 
 
 
@@ -1618,8 +1677,8 @@ const last = history.slice(-(state.timeframe || 10));
     });
 
 
-
-
+ 
+ 
 // ===== MOYENNE MOBILE 7 =====
 const movingAvg = enriched.map((_, i, arr) => {
     if (i < 6) {
@@ -1679,7 +1738,7 @@ window.chart10j = new Chart(ctx, {
                 backgroundColor: gradient,
                 fill: true,
 
-
+             
                 pointRadius: (context) => {
                  const label = context.chart.data.labels[context.dataIndex];
                  if (hasAchatLabel(label)) {return 4 + Math.sin(pulse) * 2;}
@@ -1689,7 +1748,7 @@ window.chart10j = new Chart(ctx, {
 
 
 
-
+             
                 pointHitRadius: 20,
 
                 pointHoverRadius: 12,
@@ -1712,7 +1771,7 @@ window.chart10j = new Chart(ctx, {
                    const label = context.chart.data.labels[context.dataIndex];
                    return hasAchatLabel(label) ? 2 : 0;}
                },
-
+             
             {
                 data: movingAvg,
                 tension: 0.4,
@@ -1753,17 +1812,17 @@ window.chart10j = new Chart(ctx, {
                     const i = context.dataIndex;
                     const point = enriched[i];
                     if (!point) return "";
-
+                
                     const value = point.total.toLocaleString('fr-BE') + " €";
-
+                
                     const diff = point.diff || 0;
                     const pct = point.pct || 0;
-
+                
                     const label = context.chart.data.labels[i];
                     const achatsJour = getAchatsByLabel(label);
-
+                
                     let lines = [value];
-
+                
                     // 📊 variation
                     if (Math.abs(diff) >= 1) {
                         const sign = diff >= 0 ? "+" : "";
@@ -1772,23 +1831,23 @@ window.chart10j = new Chart(ctx, {
                             `(${sign}${pct.toFixed(2).replace('.', ',')}%)`
                         );
                     }
-
+                
                     // 🔥 ACHATS
                     if (achatsJour.length > 0) {
                         lines.push(""); // espace
                         lines.push("🟢 ACHAT" + (achatsJour.length > 1 ? ` (${achatsJour.length})` : ""));
-
+                
                         achatsJour.forEach(a => {
                             let line = `• ${a.label}`;
-
+                
                             if (a.montant) {
                                 line += ` — ${Math.round(a.montant)} €`;
                             }
-
+                
                             lines.push(line);
                         });
                     }
-
+                
                     return lines;
                 }// !!! Fin Label  
                 }// !!! Fincallbacks
@@ -1824,7 +1883,47 @@ window.chart10j = new Chart(ctx, {
     }
 }); // fin new Chart
 } // ✅ ICI → fermeture de renderChart()
+ 
+ 
 
+function toggleChartFullscreen(){
+    const chartCard = document.querySelector("#chart-10j")?.closest(".card");
+    if(!chartCard) return;
+
+    const isActive = chartCard.dataset.fullscreen === "1";
+
+    if(!isActive){
+        chartCard.dataset.fullscreen = "1";
+        chartCard.dataset.prevStyle = chartCard.getAttribute("style") || "";
+        chartCard.style.position = "fixed";
+        chartCard.style.inset = "0";
+        chartCard.style.margin = "0";
+        chartCard.style.zIndex = "10000";
+        chartCard.style.borderRadius = "0";
+        chartCard.style.padding = "14px";
+        chartCard.style.height = "100dvh";
+        chartCard.style.width = "100vw";
+        chartCard.style.maxWidth = "100vw";
+
+        const canvas = document.getElementById("chart-10j");
+        if(canvas){
+            canvas.style.height = "calc(100dvh - 140px)";
+        }
+    } else {
+        chartCard.dataset.fullscreen = "0";
+        chartCard.setAttribute("style", chartCard.dataset.prevStyle || "");
+
+        const canvas = document.getElementById("chart-10j");
+        if(canvas){
+            canvas.style.height = "";
+        }
+    }
+
+    if (window.chart10j) {
+        window.chart10j.resize();
+        window.chart10j.update("none");
+    }
+}
 
 // ===== START =====
 window.addEventListener("DOMContentLoaded", () => {
@@ -1839,6 +1938,8 @@ window.addEventListener("DOMContentLoaded", () => {
     if (refreshBtn) {
         refreshBtn.addEventListener("click", () => {
 
+            if (state.isLoading) return;
+
             refreshBtn.style.transform = "rotate(360deg)";
             refreshBtn.style.transition = "0.6s";
 
@@ -1849,6 +1950,34 @@ window.addEventListener("DOMContentLoaded", () => {
             init();
         });
     }
+
+
+
+    const focusBtn = document.getElementById("focus-btn");
+
+    function disableFocusMode(){
+        if (!document.body.classList.contains("focus-mode")) return;
+        document.body.classList.remove("focus-mode");
+        if (focusBtn) focusBtn.innerText = "🎯";
+    }
+
+    if (focusBtn) {
+        focusBtn.addEventListener("click", () => {
+            document.body.classList.toggle("focus-mode");
+            focusBtn.innerText = document.body.classList.contains("focus-mode") ? "✕" : "🎯";
+        });
+    }
+
+    let focusScrollTimeout;
+    window.addEventListener("scroll", () => {
+        if (!document.body.classList.contains("focus-mode")) return;
+
+        clearTimeout(focusScrollTimeout);
+        focusScrollTimeout = setTimeout(() => {
+            if (window.scrollY > 40) disableFocusMode();
+        }, 80);
+    }, { passive: true });
+
 
 // ===== CLICK DONUT METAUX =====
     const donut = document.getElementById("donut-metaux");
@@ -1888,7 +2017,7 @@ if (donut) {
 
         } else {
 
-
+            
 // retour affichage normal
 
 const totalMetaux = orSuisse + orBelgique + argent;
@@ -1907,7 +2036,7 @@ const totalMetaux = orSuisse + orBelgique + argent;
     });
 }
 
-
+  
 
 // ===== CLICK DONUT ETF =====
 const donutETF = document.querySelector(".donut.etf");
@@ -1931,7 +2060,7 @@ if (donutETF) {
         const vSeniors = etf.seniors.parts * pe.seniors;
         const vJuniors = etf.juniors.parts * pe.juniors;
 
-        const totalETF = vMonde + vSeniors + vJuniors;
+        const totalETF = vMonde + vSeniors + vJuniors || 1;
 
         const pMonde = (vMonde / totalETF) * 100;
         const pSeniors = (vSeniors / totalETF) * 100;
@@ -1964,7 +2093,7 @@ labelE.innerHTML = `
 
 
 
-
+          
 
     // ===== CLICK RATIO =====
     const ratioEl = document.getElementById("ratio");
@@ -1974,6 +2103,11 @@ labelE.innerHTML = `
             if (!state.ratio) return;
             window.location.href = "boussole.html?ratio=" + state.ratio;
         });
+    }
+
+    const chartCanvas = document.getElementById("chart-10j");
+    if (chartCanvas) {
+        chartCanvas.addEventListener("click", toggleChartFullscreen);
     }
 
     // ===== TIMEFRAME =====
@@ -2031,3 +2165,4 @@ function goToPage(el, url) {
 
 </body>
 </html>
+ 
