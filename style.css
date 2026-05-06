@@ -13,11 +13,11 @@ body {
 
 /* montant pro finance */
 .amount {text-align: right; font-variant-numeric: tabular-nums; letter-spacing: 0.3px; }
-.total-sub {display: flex; justify-content: flex-end; gap: 12px; font-size: 12.5px; font-weight: 500; margin-top: 4px; opacity: 0.85; }                
+.total-sub {display: flex; justify-content: flex-end; gap: 12px; font-size: 12.5px; font-weight: 500; margin-top: 4px; opacity: 0.85; }		
 .total-sub span {font-variant-numeric: tabular-nums; }
 #prixMoyen {opacity: 0.7; }
 
-
+ 
 /* =====  
 background: radial-gradient(circle at top, #0f172a, #020617);
 ===== */  
@@ -1498,3 +1498,16 @@ td:nth-child(6) {
 .journal-nav button:active {
     transform: scale(0.97);
 }
+
+/* ===== UI POLISH ===== */
+.header{position:sticky;top:0;z-index:9000;background:rgba(2,6,23,.72);backdrop-filter:blur(8px);border-radius:12px;padding:8px 10px;}
+.card,.kpi,.badge-perf,.refresh{transition:all .22s ease;}
+.badge-perf.neutral{color:#cbd5e1;text-shadow:none;opacity:.9;}
+.loading .kpi h3,.loading #total,.loading #variation{color:transparent !important;position:relative;}
+.loading .kpi h3::after,.loading #total::after,.loading #variation::after{content:"";position:absolute;inset:2px 0;border-radius:8px;background:linear-gradient(90deg,rgba(148,163,184,.18),rgba(148,163,184,.35),rgba(148,163,184,.18));background-size:200% 100%;animation:shimmer 1.2s linear infinite;}
+@keyframes shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
+body.focus-mode .container > .card:not(:has(#chart-10j)),
+body.focus-mode .container > .kpi-grid,
+body.focus-mode .container > .alert-box,
+body.focus-mode .container > .total-wrapper{display:none;}
+body.focus-mode #chart-10j{height:75vh !important;}
