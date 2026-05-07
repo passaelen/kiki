@@ -1,9 +1,10 @@
-const CACHE_NAME = "portfolio-v4";
+const CACHE_NAME = "portfolio-v5";
 
 const urlsToCache = [
+  "/",
   "/index.html",
-  "/style.css",
-  "/couleurs.css"
+  "/style.css?v=20260312",
+  "/couleurs.css?v=20260312"
 ];
 
 // INSTALL
@@ -14,6 +15,7 @@ self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(urlsToCache))
+      .catch(err => console.error("CACHE ERROR:", err))
   );
 });
 
@@ -21,15 +23,18 @@ self.addEventListener("install", event => {
 self.addEventListener("activate", event => {
 
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys.map(key => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      )
-    )
+    Promise.all([
+      caches.keys().then(keys =>
+        Promise.all(
+          keys.map(key => {
+            if (key !== CACHE_NAME) {
+              return caches.delete(key);
+            }
+          })
+        )
+      ),
+      self.clients.claim()
+    ])
   );
 });
 
