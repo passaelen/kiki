@@ -10,8 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portefeuille</title>
 
-<link rel="stylesheet" href="couleurs.css?v=20260309">
-<link rel="stylesheet" href="style.css?v=20260309">
+<link rel="stylesheet" href="couleurs.css?v=20260310">
+<link rel="stylesheet" href="style.css?v=20260310">
     <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
@@ -584,6 +584,11 @@ const totalMetauxSafe = (goldTotal + silverTotal) || 1;
 
 const pOrTotal = (goldTotal / totalMetauxSafe) * 100;
 const pArgentTotal = (silverTotal / totalMetauxSafe) * 100;
+
+    console.log("goldTotal =", goldTotal);
+    console.log("silverTotal =", silverTotal);
+    console.log("totalETF =", totalETF);
+    
 
 
     return {
