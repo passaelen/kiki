@@ -1,15 +1,15 @@
-const CACHE_NAME = "portfolio-v3";
+const CACHE_NAME = "portfolio-v4";
 
 const urlsToCache = [
-  "/",
   "/index.html",
   "/style.css",
-  // "https://cdn.jsdelivr.net/npm/chart.js"
+  "/couleurs.css"
 ];
 
 // INSTALL
 self.addEventListener("install", event => {
-  self.skipWaiting(); // 🔥 active direct
+
+  self.skipWaiting();
 
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -17,8 +17,9 @@ self.addEventListener("install", event => {
   );
 });
 
-// ACTIVATE (nettoyage anciens caches)
+// ACTIVATE
 self.addEventListener("activate", event => {
+
   event.waitUntil(
     caches.keys().then(keys =>
       Promise.all(
@@ -34,6 +35,7 @@ self.addEventListener("activate", event => {
 
 // FETCH
 self.addEventListener("fetch", event => {
+
   event.respondWith(
     caches.match(event.request)
       .then(response => response || fetch(event.request))
