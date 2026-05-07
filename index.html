@@ -424,15 +424,15 @@ async function fetchPrices(){
 
     const rate = fx.rates.EUR;
 
-    console.log("GOLD API =", gold.price);
-    console.log("SILVER API =", silver.price);
+    console.log("GOLD FULL =", gold);
+    console.log("SILVER FULL =", silver);
     console.log("EURUSD =", rate);
 
 
     
     return {
-        gold_per_g: gold.price / OZ_TO_G,
-        silver_per_g: silver.price / OZ_TO_G,
+        gold_per_g: (gold.price * rate) / OZ_TO_G,
+        silver_per_g: (silver.price * rate) / OZ_TO_G,
     };
 }
 
