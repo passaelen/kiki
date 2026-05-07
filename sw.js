@@ -4,7 +4,7 @@ const urlsToCache = [
   "/",
   "/index.html",
   "/style.css",
-  "https://cdn.jsdelivr.net/npm/chart.js"
+  // "https://cdn.jsdelivr.net/npm/chart.js"
 ];
 
 // INSTALL
