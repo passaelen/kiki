@@ -1171,6 +1171,15 @@ if(alertBox){
 const lastClose =
     Number(historyList?.at(-1)?.total) || 0;
 
+
+// 🔥 DEBUG
+console.log("RESULT TOTAL =", result.total);
+console.log("LAST HISTORY =", historyList.at(-1));
+console.log("YESTERDAY =", historyList.at(-2));
+console.log("LAST CLOSE =", lastClose);
+
+
+        
 const diff = result.total - lastClose;
 
 const pct = lastClose
