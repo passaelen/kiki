@@ -1179,41 +1179,36 @@ if(alertBox){
 
 
 
-// ===== VARIATION LIVE vs LIVE précédent =====
+// ===== VARIATION LIVE vs CLÔTURE VEILLE =====
 
-const STORAGE_KEY = "portfolio_last_live_total";
+const lastClose =
+    Number(historyList?.at(-2)?.total) || 0;
 
-const currentTotal = result.total || 0;
+const diff =
+    result.total - lastClose;
 
-let previousTotal =
-    Number(localStorage.getItem(STORAGE_KEY));
-
-if (!previousTotal) {
-    previousTotal = currentTotal;
-}
-
-const diff = currentTotal - previousTotal;
-
-const pct = previousTotal
-    ? (diff / previousTotal) * 100
+const pct = lastClose
+    ? (diff / lastClose) * 100
     : 0;
 
-console.log("CURRENT :", currentTotal);
-console.log("PREVIOUS :", previousTotal);
+console.log("LIVE :", result.total);
+console.log("CLOSE :", lastClose);
 console.log("DIFF :", diff);
-
 
 const variationEl =
     document.getElementById("variation");
 
 if (variationEl) {
 
-    const sign = diff > 0 ? "+" : "";
+    const roundedDiff =
+        Math.round(diff);
+
+    const sign =
+        roundedDiff > 0 ? "+" : "";
 
     const diffStr =
         sign +
-        Math.round(diff)
-            .toLocaleString('fr-BE') +
+        roundedDiff.toLocaleString('fr-BE') +
         " €";
 
     const pctStr =
@@ -1231,10 +1226,10 @@ if (variationEl) {
         "neutral"
     );
 
-    if (diff > 0) {
+    if (roundedDiff > 0) {
         variationEl.classList.add("positive");
     }
-    else if (diff < 0) {
+    else if (roundedDiff < 0) {
         variationEl.classList.add("negative");
     }
     else {
@@ -1246,13 +1241,6 @@ if (variationEl) {
     setTimeout(() => {
         variationEl.classList.remove("flash");
     }, 400);
-
-    // sauvegarde nouveau total
-    localStorage.setItem(
-        STORAGE_KEY,
-        currentTotal
-    );
-    
 }
 
 
