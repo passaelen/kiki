@@ -553,6 +553,12 @@ function calculate(){
     const vSeniors = etf.seniors.parts * pe.seniors;
     const vJuniors = etf.juniors.parts * pe.juniors;
 
+
+    console.log("vMonde =", vMonde);
+    console.log("vSeniors =", vSeniors);
+    console.log("vJuniors =", vJuniors);
+
+    
     const totalETF = vMonde + vSeniors + vJuniors || 0;
 
     // % ETF
@@ -1075,7 +1081,14 @@ if (elB) {
 // ⚠️ on initialise vide
 // 🔥 ETF PRICES (Sheet priorité, API fallback)
 
-if (last && last.monde && last.seniors && last.juniors) {
+if (
+    last &&
+    last.monde != null &&
+    last.seniors != null &&
+    last.juniors != null
+) 
+
+{
 
     console.log("✅ ETF depuis SHEET");
 
