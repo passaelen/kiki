@@ -1185,9 +1185,12 @@ const STORAGE_KEY = "portfolio_last_live_total";
 
 const currentTotal = result.total || 0;
 
-const previousTotal =
-    Number(localStorage.getItem(STORAGE_KEY)) ||
-    currentTotal;
+let previousTotal =
+    Number(localStorage.getItem(STORAGE_KEY));
+
+if (!previousTotal) {
+    previousTotal = currentTotal;
+}
 
 const diff = currentTotal - previousTotal;
 
@@ -1199,11 +1202,6 @@ console.log("CURRENT :", currentTotal);
 console.log("PREVIOUS :", previousTotal);
 console.log("DIFF :", diff);
 
-// sauvegarde nouveau total
-localStorage.setItem(
-    STORAGE_KEY,
-    currentTotal
-);
 
 const variationEl =
     document.getElementById("variation");
@@ -1248,6 +1246,13 @@ if (variationEl) {
     setTimeout(() => {
         variationEl.classList.remove("flash");
     }, 400);
+
+    // sauvegarde nouveau total
+    localStorage.setItem(
+        STORAGE_KEY,
+        currentTotal
+    );
+    
 }
 
 
