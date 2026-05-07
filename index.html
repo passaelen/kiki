@@ -1182,7 +1182,7 @@ if(alertBox){
 // ===== VARIATION LIVE vs CLÔTURE VEILLE =====
 
 const lastClose =
-    Number(historyList?.at(-2)?.total) || 0;
+    Number(historyList?.at(-1)?.total) || 0;
 
 const diff =
     result.total - lastClose;
