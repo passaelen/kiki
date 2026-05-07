@@ -1166,21 +1166,20 @@ if(alertBox){
 
 
 
-// ===== VARIATION (vs clôture de la veille) =====
-        
-// dernier = aujourd'hui
-const today = historyList?.at(-1)?.total || 0;
-        
-// veille = avant-dernier
-const yesterday = historyList?.at(-2)?.total || 0;
+// ===== VARIATION LIVE vs dernière clôture =====
 
-// fallback sécurité
-const clotureVeille = yesterday || today || 0;
+const lastClose =
+    Number(historyList?.at(-1)?.total) || 0;
 
-const diff = result.total - clotureVeille;
-const pct = clotureVeille
-    ? (diff / clotureVeille) * 100
+const diff = result.total - lastClose;
+
+const pct = lastClose
+    ? (diff / lastClose) * 100
     : 0;
+
+console.log("TOTAL LIVE :", result.total);
+console.log("LAST CLOSE :", lastClose);
+console.log("DIFF :", diff);
         
 
 
