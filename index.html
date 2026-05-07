@@ -1167,10 +1167,22 @@ if(alertBox){
 
 
 // ===== VARIATION (vs clôture de la veille) =====
-const clotureVeille = Number(historyList?.at(-1)?.total) || 0;
+        
+// dernier = aujourd'hui
+const today = historyList?.at(-1)?.total || 0;
+        
+// veille = avant-dernier
+const yesterday = historyList?.at(-2)?.total || 0;
+
+// fallback sécurité
+const clotureVeille = yesterday || today || 0;
 
 const diff = result.total - clotureVeille;
-const pct = clotureVeille ? (diff / clotureVeille) * 100 : 0;
+const pct = clotureVeille
+    ? (diff / clotureVeille) * 100
+    : 0;
+        
+
 
 const variationEl = document.getElementById("variation");
 
