@@ -2086,13 +2086,25 @@ if (donutETF) {
         if (!labelE) return;
 
         const etf = state.etf;
-        const pe = state.etfPrices;
+        const pe = state.etfPrices || {
+            monde: 0,
+            seniors: 0,
+            juniors: 0
+        };
 
         if (!etf || !pe) return;
 
-        const vMonde = etf.monde.parts * pe.monde;
-        const vSeniors = etf.seniors.parts * pe.seniors;
-        const vJuniors = etf.juniors.parts * pe.juniors;
+        const vMonde =
+            (etf.monde?.parts || 0) *
+            (pe.monde || 0);
+
+        const vSeniors =
+            (etf.seniors?.parts || 0) *
+            (pe.seniors || 0);
+        
+        const vJuniors =
+            (etf.juniors?.parts || 0) *
+            (pe.juniors || 0);
 
         const totalETF = vMonde + vSeniors + vJuniors || 1;
 
