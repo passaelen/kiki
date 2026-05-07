@@ -1179,60 +1179,76 @@ if(alertBox){
 
 
 
-// ===== VARIATION LIVE vs dernière clôture =====
+// ===== VARIATION LIVE vs LIVE précédent =====
 
-const lastClose =
-    Number(historyList?.at(-1)?.total) || 0;
+const STORAGE_KEY = "portfolio_last_live_total";
 
+const currentTotal = result.total || 0;
 
-// 🔥 DEBUG
-console.log("RESULT TOTAL =", result.total);
-console.log("LAST HISTORY =", historyList.at(-1));
-console.log("YESTERDAY =", historyList.at(-2));
-console.log("LAST CLOSE =", lastClose);
+const previousTotal =
+    Number(localStorage.getItem(STORAGE_KEY)) ||
+    currentTotal;
 
+const diff = currentTotal - previousTotal;
 
-        
-const diff = result.total - lastClose;
-
-const pct = lastClose
-    ? (diff / lastClose) * 100
+const pct = previousTotal
+    ? (diff / previousTotal) * 100
     : 0;
 
-console.log("TOTAL LIVE :", result.total);
-console.log("LAST CLOSE :", lastClose);
+console.log("CURRENT :", currentTotal);
+console.log("PREVIOUS :", previousTotal);
 console.log("DIFF :", diff);
-        
 
+// sauvegarde nouveau total
+localStorage.setItem(
+    STORAGE_KEY,
+    currentTotal
+);
 
-const variationEl = document.getElementById("variation");
+const variationEl =
+    document.getElementById("variation");
 
 if (variationEl) {
+
     const sign = diff > 0 ? "+" : "";
 
-    const diffStr = sign + Math.round(diff).toLocaleString('fr-BE') + " €";
-    const pctStr = sign + pct.toFixed(2).replace('.', ',') + "%";
+    const diffStr =
+        sign +
+        Math.round(diff)
+            .toLocaleString('fr-BE') +
+        " €";
 
-    variationEl.innerText = diffStr + " (" + pctStr + ")";
+    const pctStr =
+        sign +
+        pct.toFixed(2)
+            .replace('.', ',') +
+        "%";
 
-    // RESET
-    variationEl.classList.remove("positive", "negative", "neutral");
+    variationEl.innerText =
+        diffStr + " (" + pctStr + ")";
+
+    variationEl.classList.remove(
+        "positive",
+        "negative",
+        "neutral"
+    );
 
     if (diff > 0) {
         variationEl.classList.add("positive");
-    } else if (diff < 0) {
+    }
+    else if (diff < 0) {
         variationEl.classList.add("negative");
-    } else {
+    }
+    else {
         variationEl.classList.add("neutral");
     }
 
-    // animation
     variationEl.classList.add("flash");
+
     setTimeout(() => {
         variationEl.classList.remove("flash");
     }, 400);
 }
-
 
 
 
