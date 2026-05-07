@@ -526,20 +526,26 @@ function parseCSV(text) {
 function calculate(){
 
     const p = state.prices;
-    
     const pf = state.portfolio;
     const etf = state.etf;
     const pe = state.etfPrices;
 
+    const goldPrice = Number(p?.gold_per_g) || 0;
+    const silverPrice = Number(p?.silver_per_g) || 0;
+    
+    const orSuisseG = Number(pf?.or_suisse_g) || 0;
+    const orBelgiqueG = Number(pf?.or_belgique_g) || 0;
+    const argentG = Number(pf?.argent_g) || 0;
+
     console.log("Argent g:", pf.argent_g); // ✅ ici
 
     const goldTotal =
-        (pf.or_suisse_g + pf.or_belgique_g) * p.gold_per_g;
+        (orSuisseG + orBelgiqueG) * goldPrice;
 
     const silverTotal =
         argentG * silverPrice * silverRealFactor;
 
-    const ratio = p.gold_per_g / p.silver_per_g;
+    const ratio = goldPrice / silverPrice;
 
     const totalMetaux = (goldTotal + silverTotal) || 1;
 
