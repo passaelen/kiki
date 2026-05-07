@@ -10,8 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portefeuille</title>
 
-<link rel="stylesheet" href="couleurs.css?v=20260310">
-<link rel="stylesheet" href="style.css?v=20260310">
+<link rel="stylesheet" href="couleurs.css?v=20260311">
+<link rel="stylesheet" href="style.css?v=20260311">
     <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
@@ -424,6 +424,12 @@ async function fetchPrices(){
 
     const rate = fx.rates.EUR;
 
+    console.log("GOLD API =", gold.price);
+    console.log("SILVER API =", silver.price);
+    console.log("EURUSD =", rate);
+
+
+    
     return {
         gold_per_g: (gold.price * rate) / OZ_TO_G,
         silver_per_g: (silver.price * rate) / OZ_TO_G,
