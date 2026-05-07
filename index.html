@@ -378,7 +378,7 @@ function hasAchatLabel(label) {
 // ===== CONFIG =====
 const OZ_TO_G = 31.1035;
 // enlever ajustement revente Suisse pour physique à Anvers => 1.0
-const silverRealFactor = 1.0; 
+const silverRealFactor = 1.028; 
 
 
 
@@ -537,7 +537,7 @@ function calculate(){
         (pf.or_suisse_g + pf.or_belgique_g) * p.gold_per_g;
 
     const silverTotal =
-        pf.argent_g * p.silver_per_g;
+        argentG * silverPrice * silverRealFactor;
 
     const ratio = p.gold_per_g / p.silver_per_g;
 
