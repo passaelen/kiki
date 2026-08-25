@@ -14,4 +14,5 @@ const DATA = {
     seniors: { parts: 0, buy: 0.0 },
     juniors: { parts: 0, buy: 0.0 }
   }
+
 };
